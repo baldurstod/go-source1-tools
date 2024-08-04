@@ -1,2 +1,8 @@
 github.com/NublyBR/go-vpk v0.0.0-20240228030726-b1042e92ce58 h1:LNmGUHSpLUw3wQBEW0WxNonE6FfLklJlAodQ439LNoc=
 github.com/NublyBR/go-vpk v0.0.0-20240228030726-b1042e92ce58/go.mod h1:bKkLG1OoSAlGpkY/NvnavzvV+xIpQDn4rTggf/jkDwQ=
+github.com/kulaginds/lzma v0.0.1-alpha9 h1:qExneXxXm8t3LeqBYicUQetlv++nkMZnsDQwwfjVhqo=
+github.com/kulaginds/lzma v0.0.1-alpha9/go.mod h1:m/o7DDlJDXGOHJiItA6VKG+Yt2pdNAJx+jNq8AwARl0=
+github.com/luckcolors/lzma v0.0.0-20171228161409-10a19aa3c6eb h1:rULnY96+TwVggNGq8Zxgg6OSAcPDNSaMAI+CnYmRnV4=
+github.com/luckcolors/lzma v0.0.0-20171228161409-10a19aa3c6eb/go.mod h1:AdNuT2RnWNpLlvXIGbEDq/JegDJTnqzxpnDNxa7HFkE=
+github.com/ulikunitz/xz v0.5.12 h1:37Nm15o69RwBkXM0J6A5OlE67RZTfzUxTj8fB3dfcsc=
+github.com/ulikunitz/xz v0.5.12/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=

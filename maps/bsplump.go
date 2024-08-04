@@ -1,42 +1,37 @@
 package maps
 
-type BspLumpHeader struct {
-	lumpType int
-	offset   uint32
-	len      uint32
-}
-
 type BspLumpData interface {
 }
 
-type BspLump struct {
-	offset uint32
-	len    uint32
-	data   BspLumpData
+type bspLump struct {
+	lumpType int
+	offset   uint32
+	len      uint32
+	data     BspLumpData
 }
 
-func newBspLump(t int) *BspLump {
+func newBspLump(t int) *bspLump {
+	var data BspLumpData
 	switch t {
 	case LUMP_ENTITIES:
-		return &BspLump{
-			data: BspLumpEntities{},
-		}
+		data = bspLumpEntities{}
 	case LUMP_PLANES:
-		return &BspLump{
-			data: BspLumpPlanes{},
-		}
+		data = bspLumpPlanes{}
 	default:
 		//panic("unknonw lump type " + strconv.Itoa(t))
-		return &BspLump{}
-
 	}
-	return nil
+
+	return &bspLump{
+		lumpType: t,
+		data:     data,
+	}
 }
 
-type BspLumpEntities struct {
+type bspLumpEntities struct {
+	text string
 	//BspLumpBase
 }
 
-type BspLumpPlanes struct {
+type bspLumpPlanes struct {
 	//BspLumpBase
 }

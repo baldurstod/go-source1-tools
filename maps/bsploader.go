@@ -16,6 +16,7 @@ import (
 const BSP_MAGIC = 0x50534256 //VBSP
 const BSP_HEADER_LUMPS_COUNT = 64
 const BYTES_PER_LUMP_HEADER = 16
+const BYTES_PER_PLANE = 20
 
 var mapCache = func() map[string]map[string]*BspMap { return make(map[string]map[string]*BspMap) }()
 
@@ -178,8 +179,8 @@ func (loader *BspLoader) parseLumps() error {
 	return nil
 }
 
-func (loader *BspLoader) parseLump(h *BspLump) error {
-	loader.reader.Seek(int64(h.offset), io.SeekStart)
+func (loader *BspLoader) parseLump(lump *bspLump) error {
+	loader.reader.Seek(int64(lump.offset), io.SeekStart)
 
 	var reader io.ReadSeeker
 	var err error
@@ -187,7 +188,53 @@ func (loader *BspLoader) parseLump(h *BspLump) error {
 		return err
 	}
 
-	log.Println(reader.Seek)
+	switch lump.lumpType {
+	case LUMP_ENTITIES:
+		loader.parseLumpEntities(reader, lump)
+	case LUMP_PLANES:
+		loader.parseLumpPlanes(reader, lump)
+	}
+
+	return nil
+}
+
+func (loader *BspLoader) parseLumpEntities(reader io.ReadSeeker, lump *bspLump) error {
+	buf := make([]byte, lump.len)
+	if _, err := reader.Read(buf); err != nil {
+		return err
+	}
+	lumpData := lump.data.(bspLumpEntities)
+	lumpData.text = string(buf[:])
+
+	return nil
+}
+
+func (loader *BspLoader) parseLumpPlanes(reader io.ReadSeeker, lump *bspLump) error {
+	/*
+		#parseLumpPlanes(reader, lump) {
+			reader.seek(lump.lumpOffset);
+			const BYTES_PER_PLANE = 20;
+			const planesCount = lump.getLumpLen() / BYTES_PER_PLANE;
+			const lumpData = [];
+			for (let planeIndex = 0; planeIndex < planesCount; planeIndex++) {
+				let plane = new SourceBSPLumpPlane();
+				plane.normal = reader.getVector3();
+				plane.dist = reader.getFloat32();
+				plane.type = reader.getInt32();
+				lumpData.push(plane);
+			}
+			lump.setLumpData(lumpData);
+		}
+	*/
+
+	/*
+		buf := make([]byte, lump.len)
+		if _, err := reader.Read(buf); err != nil {
+			return err
+		}
+		lumpData := lump.data.(bspLumpEntities)
+		lumpData.text = string(buf[:])
+	*/
 
 	return nil
 }

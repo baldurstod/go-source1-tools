@@ -5,13 +5,13 @@ type BspMap struct {
 	filename    string
 	fileVersion int32
 	mapRevision int32
-	lumps       []*BspLump
+	lumps       []*bspLump
 }
 
 func newBspMap() *BspMap {
 	return &BspMap{
 		//lumpHeaders: make([]*BspLumpHeader, 0, 64),
-		lumps: make([]*BspLump, 0, 64),
+		lumps: make([]*bspLump, 0, 64),
 	}
 }
 
@@ -21,6 +21,6 @@ func (m *BspMap) addLumpHeader(h *BspLumpHeader) {
 }
 */
 
-func (m *BspMap) addLump(l *BspLump) {
+func (m *BspMap) addLump(l *bspLump) {
 	m.lumps = append(m.lumps, l)
 }

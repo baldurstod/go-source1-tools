@@ -13,7 +13,7 @@ import (
 
 func TestMap(t *testing.T) {
 
-	m, err := maps.GetMap("tf2", "cp_hadal.bsp")
+	m, err := maps.GetMap("tf2", "itemtest.bsp") //cp_hadal
 	if err != nil {
 		t.Error(err)
 		return

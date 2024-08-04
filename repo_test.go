@@ -13,7 +13,7 @@ func TestRepositories(t *testing.T) {
 		t.Error("repo not found")
 	}
 
-	filenames := [...]string{"models/player/demo.mdl", "materials/models/player/demo/demoman_red.vtf"}
+	filenames := [...]string{"models/player/demo.mdl", "materials/models/player/demo/demoman_red.vtf", "cp_hadal.bsp"}
 
 	for _, filename := range filenames {
 		buf, err := repo.ReadFile(filename)

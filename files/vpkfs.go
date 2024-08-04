@@ -1,4 +1,4 @@
-package vpk
+package files
 
 import (
 	"errors"

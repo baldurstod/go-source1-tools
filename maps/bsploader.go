@@ -6,11 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/baldurstod/go-source1-tools/repository"
-	"github.com/luckcolors/lzma"
+	"github.com/ulikunitz/xz/lzma"
 )
 
 const BSP_MAGIC = 0x50534256 //VBSP
@@ -249,7 +248,6 @@ func (loader *BspLoader) initLZMALump() (io.ReadSeeker, error) {
 	if lzmaMagic == 0x414d5a4c { //LZMA
 		var uncompressedSize uint32
 		var compressedSize uint32
-		var properties [5]byte
 
 		if err = binary.Read(loader.reader, binary.LittleEndian, &uncompressedSize); err != nil {
 			return nil, fmt.Errorf("failed to read uncompressedSize in initLZMALump: <%w>", err)
@@ -262,36 +260,37 @@ func (loader *BspLoader) initLZMALump() (io.ReadSeeker, error) {
 				return nil, fmt.Errorf("failed to read uncompressedSize in initLZMALump: <%w>", err)
 			}*/
 
-		log.Println(uncompressedSize, compressedSize, properties)
-		var offset int64
-		if offset, err = loader.reader.Seek(0, io.SeekCurrent); err != nil {
-			return nil, err
-		}
-
-		/*var r io.ReadCloser
-		if r, err = lzma.NewReader(bytes.NewReader(loader.b[offset:])); err != nil {
-			return nil, err
-		}*/
-		r := lzma.NewReader(bytes.NewReader(loader.b[offset:]))
-		var p [1000]byte
-		if _, err := r.Read(p[:]); err != nil {
-			return nil, err
-		}
-		log.Println(p)
-
-		//bytes.NewReader(b)
-
 		/*
-			const uncompressedSize = reader.getUint32();
-			const compressedSize = reader.getUint32();
-			const properties = reader.getBytes(5);
-			const compressedDatas = reader.getBytes(compressedSize);// 4 + 4 + 4 + 5
+			log.Println(uncompressedSize, compressedSize, properties)
+			var offset int64
+			if offset, err = loader.reader.Seek(0, io.SeekCurrent); err != nil {
+				return nil, err
+			}*/
 
-			reader = new BinaryReader(DecompressLZMA(properties, compressedDatas, uncompressedSize));
+		b := make([]byte, compressedSize+13)
+		buf := bytes.NewBuffer(make([]byte, 0, 8))
+		if err = binary.Read(loader.reader, binary.LittleEndian, b[0:5]); err != nil {
+			return nil, fmt.Errorf("failed to read choreography bytes: <%w>", err)
+		}
+		if err = binary.Write(buf, binary.LittleEndian, uint64(uncompressedSize)); err != nil {
+			return nil, fmt.Errorf("failed to write choreography uncompressed size: <%w>", err)
+		}
+		copy(b[5:], buf.Bytes())
+		if err = binary.Read(loader.reader, binary.LittleEndian, b[13:]); err != nil {
+			return nil, fmt.Errorf("failed to read choreography bytes: <%w>", err)
+		}
+		var r *lzma.Reader
 
-			lump.lumpOffset = 0;
-			lump.lumpLen = uncompressedSize;
-		*/
+		if r, err = lzma.NewReader(bytes.NewReader(b)); err != nil {
+			return nil, fmt.Errorf("failed to create lzma reader: <%w>", err)
+		}
+
+		var uncompressed = make([]byte, uncompressedSize)
+		if _, err = r.Read(uncompressed[:]); err != nil {
+			return nil, err
+		}
+
+		return bytes.NewReader(uncompressed), nil
 
 	}
 
